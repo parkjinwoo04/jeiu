@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>테이스트리 - 맛집 추천의 모든 것</title>
+    <style>
+        /* 기본 리셋 및 폰트 설정 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 1. 헤더 (상단 네비게이션) */
+        header {
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff5a5f; /* 포인트 컬러: 식욕을 돋우는 붉은 계열 */
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            font-weight: 500;
+        }
+
+        .nav-menu li a:hover {
+            color: #ff5a5f;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        /* 2. 비주얼 배너 & 검색 섹션 */
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80') no-repeat center/cover;
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .search-box {
+            display: flex;
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            padding: 5px;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 15px 25px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box button {
+            background-color: #ff5a5f;
+            color: #fff;
+            border: none;
+            padding: 0 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-box button:hover {
+            background-color: #e0484d;
+        }
+
+        /* 3. 메인 콘텐츠 영역 (핫플레이스 / 추천 맛집) */
+        .main-content {
+            padding: 60px 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .section-title span {
+            font-size: 14px;
+            color: #888;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        /* 맛집 카드 그리드 레이아웃 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            background-color: #eee;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-tags {
+            font-size: 12px;
+            color: #ff5a5f;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-rating {
+            color: #ffcc00;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .card-rating span {
+            color: #333;
+            margin-left: 5px;
+        }
+
+        .card-info {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* 4. 푸터 */
+        footer {
+            background-color: #333;
+            color: #999;
+            padding: 40px 0;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #44px;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-logo {
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 헤더 영역 -->
+    <header>
+        <div class="container header-content">
+            <div class="logo"><a href="#">테이스트리</a></div>
+            <ul class="nav-menu">
+                <li><a href="#">맛집검색</a></li>
+                <li><a href="#">핫플레이스</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 2. 메인 배너 및 검색 영역 -->
+    <section class="hero-section">
+        <h1>무엇을 먹어볼까요?</h1>
+        <div class="search-box">
+            <input type="text" placeholder="지역, 음식 또는 식당 이름 입력">
+            <button type="button">검색</button>
+        </div>
+    </section>
+
+    <!-- 3. 메인 콘텐츠 영역 -->
+    <main class="container main-content">
+        
+        <!-- 섹션 1: 지금 뜨는 핫플레이스 -->
+        <h2 class="section-title">지금 뜨는 핫플레이스 <span>더보기 ></span></h2>
+        <div class="grid-container">
+            
+            <!-- 맛집 카드 샘플 1 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=400&q=80" alt="맛집 이미지" class="card-img">
+                <div class="card-body">
+                    <div class="card-tags">#이태원 #화덕피자</div>
+                    <div class="card-title">피자리아 나폴리</div>
+                    <div class="card-rating">★ 4.7 <span>(리뷰 128)</span></div>
+                    <div class="card-info">서울 용산구 이태원로 · 이탈리안</div>
+                </div>
+            </div>
+
+            <!-- 맛집 카드 샘플 2 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=400&q=80" alt="맛집 이미지" class="card-img">
+                <div class="card-body">
+                    <div class="card-tags">#강남역 #고기맛집</div>
+                    <div class="card-title">육즙 연구소</div>
+                    <div class="card-rating">★ 4.5 <span>(리뷰 94)</span></div>
+                    <div class="card-info">서울 강남구 역삼동 · 바베큐/구이</div>
+                </div>
+            </div>
+
+            <!-- 맛집 카드 샘플 3 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=400&q=80" alt="맛집 이미지" class="card-img">
+                <div class="card-body">
+                    <div class="card-tags">#홍대 #라멘맛집</div>
+                    <div class="card-title">멘야 사쿠라</div>
+                    <div class="card-rating">★ 4.8 <span>(리뷰 210)</span></div>
+                    <div class="card-info">서울 마포구 와우산로 · 일식/라멘</div>
+                </div>
+            </div>
+
+            <!-- 맛집 카드 샘플 4 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80" alt="맛집 이미지" class="card-img">
+                <div class="card-body">
+                    <div class="card-tags">#성수동 #브런치카페</div>
+                    <div class="card-title">그린 가든</div>
+                    <div class="card-rating">★ 4.3 <span>(리뷰 76)</span></div>
+                    <div class="card-info">서울 성동구 성수이로 · 카페/브런치</div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+ 
+    
+</body>
+</html>
